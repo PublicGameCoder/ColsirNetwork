@@ -1,0 +1,10 @@
+main: colsirnetwork.ColsirNetwork
+name: ColsirNetwork
+version: 1.0.0
+author: PublicGameCoder
+
+commands:
+   Colsirwand:
+      description: This is the Colsirwand's main command!
+      usage: Syntax error! Perhaps you meant /Colsirwand <Historia/Arroxin/Sparta/Zorcus/Levitheros> ?
+      permission: ColsirWands.use
