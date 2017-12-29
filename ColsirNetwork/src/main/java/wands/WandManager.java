@@ -9,9 +9,12 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import colsirnetwork.ColsirNetwork;
+
 public class WandManager {
 	
 	private static WandManager instance;
+	private WandHandler handler;
 	private Map<WandEnum,ItemStack> wands = new HashMap<WandEnum,ItemStack>();
 
 	public static WandManager getManager() {
@@ -43,6 +46,8 @@ public class WandManager {
 			w.setItemMeta(meta);
 			wands.put(wand, w);
 		}
+		handler = new WandHandler();
+		ColsirNetwork.getInstance().getServer().getPluginManager().registerEvents(handler, ColsirNetwork.getInstance());
 	}
 
 	public void giveWand(Player player, WandEnum type) {

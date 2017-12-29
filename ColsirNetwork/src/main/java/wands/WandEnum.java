@@ -1,6 +1,8 @@
 package wands;
 
 import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -35,9 +37,9 @@ public enum WandEnum {
 	 */
 	public static WandEnum getByName(String name) {
 		WandEnum wand = null;
-		
+		String strippedName = ChatColor.stripColor(name);
 		for (WandEnum w : WandEnum.values()) {
-			if (ChatColor.stripColor(w.getName()).equalsIgnoreCase(name)) {
+			if (ChatColor.stripColor(w.getName()).equalsIgnoreCase(strippedName)) {
 				wand = w;
 				break;
 			}
@@ -68,6 +70,34 @@ public enum WandEnum {
 
 	public byte getData() {
 		return this._data;
+	}
+
+	@SuppressWarnings("deprecation")
+	public static boolean isValidWand(ItemStack item) {
+		for (WandEnum wand : WandEnum.values()) {
+			if (!item.getItemMeta().getDisplayName().equalsIgnoreCase(wand.getName()))continue;
+			if (item.getType() != wand.getMaterial())continue;
+			if (item.getData().getData() != wand.getData())continue;
+			if (item.getAmount() > wand.getAmount())continue;
+			return true;
+		}
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static boolean isValidWand(ItemStack item, PlayerInteractEvent e) {
+		for (WandEnum wand : WandEnum.values()) {
+			if (!item.getItemMeta().getDisplayName().equalsIgnoreCase(wand.getName()))continue;
+			if (item.getType() != wand.getMaterial())continue;
+			if (item.getData().getData() != wand.getData())continue;
+			if (item.getAmount() > wand.getAmount()) {
+				e.getPlayer().sendMessage(ChatColor.RED+"Sorry but there are too many wands stacked on each other.");
+				e.setCancelled(true);
+				continue;
+			}
+			return true;
+		}
+		return false;
 	}
 
 }
