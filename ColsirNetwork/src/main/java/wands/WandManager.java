@@ -1,4 +1,4 @@
-package colsirnetwork;
+package wands;
 
 import java.util.HashMap;
 import java.util.Map;

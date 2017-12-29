@@ -2,6 +2,8 @@ package colsirnetwork;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
+import wands.WandManager;
+
 public class ColsirNetwork extends JavaPlugin {
 	
 	private static ColsirNetwork instance;

@@ -1,4 +1,4 @@
-package colsirnetwork;
+package wands;
 
 import org.bukkit.Material;
 
