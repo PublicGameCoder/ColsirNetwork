@@ -7,7 +7,7 @@ import net.md_5.bungee.api.ChatColor;
 public enum WandEnum {
 	Historia("&2Historia", "ColsirWands.historia", Material.STONE, 1, (short)0, (byte)5),
 	Arroxin("&1Arr&foxin", "ColsirWands.arroxin", Material.STICK, 1, (short)0, (byte)0),
-	Sparta("&4Spar&fta", "ColsirWands.sparta", Material.BOW, 1, (short)0, (byte)0),
+	Elrym("&fEl&9rym", "ColsirWands.elrym", Material.BOW, 1, (short)0, (byte)0),
 	Zorcus("&2Zor&fcus", "ColsirWands.zorcus", Material.DIAMOND_SWORD, 1, (short)0, (byte)0),
 	Levitheros("&2Levi&0theros", "ColsirWands.levitheros", Material.DIAMOND_AXE, 1, (short)0, (byte)0)
 	;
