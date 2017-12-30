@@ -16,7 +16,7 @@ class WandDetails {
 	public WandDetails(WandEnum type, ItemStack wand) {
 		this.type = type;
 		this.wand = wand;
-		this.spellIndex = 0;
+		this.spellIndex = -1;
 	}	
 	
 	public WandEnum getType() {
@@ -25,6 +25,24 @@ class WandDetails {
 	
 	public ItemStack getWand() {
 		return this.wand;
+	}
+
+	public void mergeData(WandDetails wandDetails) {
+		if (wandDetails.getType() != null) {
+			this.type = wandDetails.getType();
+		}
+		if (wandDetails.getWand() != null) {
+			this.wand = wandDetails.getWand();
+		}
+		if (wandDetails.master != null) {
+			this.master = wandDetails.master;
+		}
+		if (wandDetails.currentAction != null) {
+			this.currentAction = wandDetails.currentAction;
+		}
+		if (wandDetails.spellIndex >= 0) {
+			this.spellIndex = wandDetails.spellIndex;
+		}
 	}
 
 }
