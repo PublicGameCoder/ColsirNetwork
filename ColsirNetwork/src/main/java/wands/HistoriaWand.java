@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,8 +23,18 @@ import net.minecraft.server.v1_12_R1.EnumParticle;
 public class HistoriaWand extends Wand implements Listener {
 	
 	private enum SpellsEnum {
-		ObsidianWall,
-		Eathquake;
+		ObsidianWall("&5The Wall"),
+		Eathquake("&6Earth&7Quake");
+		
+		private String name;
+		
+		SpellsEnum(String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return this.name;
+		}
 	}
 	private SpellsEnum currentSpell;
 
@@ -34,7 +45,7 @@ public class HistoriaWand extends Wand implements Listener {
 		if (instance == null) {
 			instance = new HistoriaWand(wandDetails);
 		}else {
-			instance.wandDetails = wandDetails;
+			instance.wandDetails.mergeData(wandDetails);
 		}
 		return instance;
 	}
@@ -47,14 +58,14 @@ public class HistoriaWand extends Wand implements Listener {
 		unbreakableBlocks = new ArrayList<Block>();
 		ColsirNetwork.getInstance().getServer().getPluginManager().registerEvents(this, ColsirNetwork.getInstance());
 		this.wandDetails = wandDetails;
-		currentSpell = SpellsEnum.values()[wandDetails.spellIndex];
+		currentSpell = ((wandDetails.spellIndex < 0)? SpellsEnum.values()[0] : SpellsEnum.values()[wandDetails.spellIndex]);
 	}
 
 	@Override
 	protected void use() {
 		switch (currentSpell) {
 		case ObsidianWall:
-			useEathquakeSpell();//useWallSpell();
+			useWallSpell();
 			break;
 		case Eathquake:
 			useEathquakeSpell();
@@ -68,7 +79,6 @@ public class HistoriaWand extends Wand implements Listener {
 	private int quakeWidth = 5;
 	private int quakeDepth = 8;
 	private float viewRange = 20f;
-	@SuppressWarnings("incomplete-switch")
 	private void useEathquakeSpell() {
 		Player master = wandDetails.master;
 		master.sendMessage("Spell used!");
@@ -229,7 +239,7 @@ public class HistoriaWand extends Wand implements Listener {
 		t.runTaskLater(ColsirNetwork.getInstance(), 20 * 5);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent e) {
 		for (Block b : unbreakableBlocks) {
 			if (e.getBlock().equals(b)) {
@@ -237,5 +247,17 @@ public class HistoriaWand extends Wand implements Listener {
 				break;
 			}
 		}
+	}
+	
+	@Override
+	protected String onSpellChange(int dynamicIndex) {
+		wandDetails.spellIndex += dynamicIndex;
+		if (wandDetails.spellIndex < 0) {
+			wandDetails.spellIndex += SpellsEnum.values().length;
+		}else if (wandDetails.spellIndex > SpellsEnum.values().length-1) {
+			wandDetails.spellIndex -= SpellsEnum.values().length;
+		}
+		currentSpell = SpellsEnum.values()[wandDetails.spellIndex];
+		return currentSpell.getName();
 	}
 }

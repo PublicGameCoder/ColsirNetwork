@@ -11,9 +11,18 @@ public class ZorcusWand extends Wand {
 		instance.wandDetails = wandDetails;
 		return instance;
 	}
+	
+	public static ZorcusWand getManager() {
+		return instance;
+	}
 
 	@Override
 	protected void use() {
 		
+	}
+	
+	@Override
+	protected String onSpellChange(int dynamicIndex) {
+		return "";
 	}
 }

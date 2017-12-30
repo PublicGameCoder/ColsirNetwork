@@ -11,9 +11,18 @@ public class ElrymWand extends Wand {
 		instance.wandDetails = wandDetails;
 		return instance;
 	}
+	
+	public static ElrymWand getManager() {
+		return instance;
+	}
 
 	@Override
 	protected void use() {
 		
+	}
+
+	@Override
+	protected String onSpellChange(int dynamicIndex) {
+		return "";
 	}
 }

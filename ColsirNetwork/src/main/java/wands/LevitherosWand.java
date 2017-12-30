@@ -11,9 +11,18 @@ public class LevitherosWand extends Wand {
 		instance.wandDetails = wandDetails;
 		return instance;
 	}
+	
+	public static LevitherosWand getManager() {
+		return instance;
+	}
 
 	@Override
 	protected void use() {
 		
+	}
+	
+	@Override
+	protected String onSpellChange(int dynamicIndex) {
+		return "";
 	}
 }
