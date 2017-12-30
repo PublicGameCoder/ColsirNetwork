@@ -139,6 +139,4 @@ public class ParticlesManager {
 			}
 		}.runTaskTimer(ColsirNetwork.getInstance(), 0, 1);
 	}
-	
-	
 }
