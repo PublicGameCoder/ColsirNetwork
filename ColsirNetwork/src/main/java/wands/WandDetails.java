@@ -10,11 +10,13 @@ class WandDetails {
 	private ItemStack wand;
 	public Player master;
 	public Action currentAction;
+	public int spellIndex;
 	
 
 	public WandDetails(WandEnum type, ItemStack wand) {
 		this.type = type;
 		this.wand = wand;
+		this.spellIndex = 0;
 	}	
 	
 	public WandEnum getType() {
