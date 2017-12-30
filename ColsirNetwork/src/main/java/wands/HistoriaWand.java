@@ -13,41 +13,130 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import colsirnetwork.ColsirNetwork;
+import colsirnetwork.ParticlesManager;
+import net.minecraft.server.v1_12_R1.EnumParticle;
 
 public class HistoriaWand extends Wand implements Listener {
+	
+	private enum SpellsEnum {
+		ObsidianWall,
+		Eathquake;
+	}
+	private SpellsEnum currentSpell;
 
 	private List<Block> unbreakableBlocks;
 	private static HistoriaWand instance;
 
 	public static HistoriaWand getManager(WandDetails wandDetails) {
 		if (instance == null) {
-			instance = new HistoriaWand();
+			instance = new HistoriaWand(wandDetails);
+		}else {
+			instance.wandDetails = wandDetails;
 		}
-		instance.wandDetails = wandDetails;
 		return instance;
 	}
 	
 	public static HistoriaWand getManager() {
-		if (instance == null) {
-			instance = new HistoriaWand();
-		}
 		return instance;
 	}
 	
-	private HistoriaWand() {
+	private HistoriaWand(WandDetails wandDetails) {
 		unbreakableBlocks = new ArrayList<Block>();
 		ColsirNetwork.getInstance().getServer().getPluginManager().registerEvents(this, ColsirNetwork.getInstance());
+		this.wandDetails = wandDetails;
+		currentSpell = SpellsEnum.values()[wandDetails.spellIndex];
 	}
 
 	@Override
 	protected void use() {
-		useWallSpell();
+		switch (currentSpell) {
+		case ObsidianWall:
+			useEathquakeSpell();//useWallSpell();
+			break;
+		case Eathquake:
+			useEathquakeSpell();
+			break;
+		default:
+			useWallSpell();
+			break;
+		}
 	}
 	
-	private int width = 3;
-	private int height = 2;
+	private int quakeWidth = 5;
+	private int quakeDepth = 8;
+	private float viewRange = 20f;
+	@SuppressWarnings("incomplete-switch")
+	private void useEathquakeSpell() {
+		Player master = wandDetails.master;
+		master.sendMessage("Spell used!");
+		List<Block> blocks = master.getLineOfSight(null, 2);
+		if (blocks.isEmpty())return;
+		Block block = blocks.get(blocks.size()-1);
+		Location bLoc = block.getLocation();
+		bLoc.setY(master.getLocation().getY());
+		BlockFace front = blocks.get(blocks.size()-2).getFace(block);
+		BlockFace face = getFace(block.getFace(blocks.get(blocks.size()-2)),-90f);
+		block = block.getWorld().getBlockAt(bLoc);
+		Block b = block.getRelative(getFace(face, -90f));
+		bLoc = b.getLocation();
+		
+		BlockFace left = getFace(front,-90);
+		BlockFace right = getFace(front,90);
+		List<Block> Blocations = new ArrayList<Block>();
+		Block neightbore = b;
+		for (int leftWidth = 0; leftWidth < quakeWidth/2; leftWidth++) {
+			neightbore = neightbore.getRelative(left);
+			Blocations.add(neightbore);
+		}
+		neightbore = b;
+		Blocations.add(b);
+		for (int rightWidth = 0; rightWidth < quakeWidth/2; rightWidth++) {
+			neightbore = neightbore.getRelative(right);
+			Blocations.add(neightbore);
+		}
+		
+		List<Vector> particleLocs = new ArrayList<Vector>();
+		for (Block blockLoc : Blocations) {
+			particleLocs.add(blockLoc.getLocation().toVector());
+		}
+		
+		float depthincreasement = 0.5f;
+		Vector increasement = null;
+		switch (front) {
+		case NORTH:
+			increasement = new Vector(0,0,-depthincreasement);
+			break;
+		case EAST:
+			increasement = new Vector(depthincreasement,0,0);
+			break;
+		case SOUTH:
+			increasement = new Vector(0,0,depthincreasement);
+			break;
+		case WEST:
+			increasement = new Vector(-depthincreasement,0,0);
+			break;
+		default:
+			increasement = new Vector(0,0,-depthincreasement);
+			break;
+		}
+		
+		float currentDepth = 0.0f;
+		while(currentDepth <= quakeDepth) {
+			for (Vector pLoc : particleLocs) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					ParticlesManager.getManager().spawnParticlePlayerPacketInReach(player, EnumParticle.HEART, (int)viewRange, new Location(b.getWorld(),pLoc.getX(),pLoc.getY(),pLoc.getZ()), new Vector(0,0,0), 1, 2);
+				}
+				pLoc.add(increasement);
+			}
+			currentDepth += depthincreasement;
+		}
+	}
+
+	private int blockWidth = 3;
+	private int blockHeight = 2;
 	private void useWallSpell() {
 		Player master = wandDetails.master;
 		master.sendMessage("Spell used!");
@@ -57,12 +146,12 @@ public class HistoriaWand extends Wand implements Listener {
 		Location bLoc = block.getLocation();
 		bLoc.setY(master.getLocation().getY());
 		BlockFace face = getFace(block.getFace(blocks.get(blocks.size()-2)),-90f);
-		bLoc.setY(bLoc.getY()+(height/2));
+		bLoc.setY(bLoc.getY()+(blockHeight/2));
 		block = block.getWorld().getBlockAt(bLoc);
 		Block b = block.getRelative(getFace(face, 180f));
 		bLoc = b.getLocation();
-		for (int y = 0; y < height; y++ ) {
-			for (int x = 0; x < width; x++ ) {
+		for (int y = 0; y < blockHeight; y++ ) {
+			for (int x = 0; x < blockWidth; x++ ) {
 				changeTempIfPossible(b, Material.OBSIDIAN);
 				b = b.getRelative(face);
 			}
@@ -71,6 +160,7 @@ public class HistoriaWand extends Wand implements Listener {
 		}
 	}
 	
+	@SuppressWarnings("incomplete-switch")
 	public BlockFace getFace(BlockFace currentFace, float rotationDeg) {
 		if (rotationDeg <= 45) {
 			rotationDeg += 405;
@@ -147,8 +237,5 @@ public class HistoriaWand extends Wand implements Listener {
 				break;
 			}
 		}
-	}
-	
-	public void destructor() {
 	}
 }
