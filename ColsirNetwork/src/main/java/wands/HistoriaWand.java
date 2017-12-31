@@ -81,7 +81,6 @@ public class HistoriaWand extends Wand implements Listener {
 	private float viewRange = 20f;
 	private void useEathquakeSpell() {
 		Player master = wandDetails.master;
-		master.sendMessage("Spell used!");
 		List<Block> blocks = master.getLineOfSight(null, 2);
 		if (blocks.isEmpty())return;
 		Block block = blocks.get(blocks.size()-1);

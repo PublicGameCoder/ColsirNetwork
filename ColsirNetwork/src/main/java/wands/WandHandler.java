@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import colsirnetwork.Actionbar;
+import colsirnetwork.ChatUtil;
 import net.md_5.bungee.api.ChatColor;
 
 public class WandHandler implements Listener {
@@ -32,7 +33,7 @@ public class WandHandler implements Listener {
 		WandEnum type = WandEnum.getByName(item.getItemMeta().getDisplayName());
 		if (type == null) {
 			if (player.isOp()) {
-				player.sendMessage("Wand type was not found!");
+				ChatUtil.sendTo(player,"Wand type was not found!");
 			}
 			return;
 		}
@@ -78,7 +79,7 @@ public class WandHandler implements Listener {
 		WandEnum type = WandEnum.getByName(item.getItemMeta().getDisplayName());
 		if (type == null) {
 			if (player.isOp()) {
-				player.sendMessage("Wand type was not found!");
+				ChatUtil.sendTo(player,"Wand type was not found!");
 			}
 			return;
 		}

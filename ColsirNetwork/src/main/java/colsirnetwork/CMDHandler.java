@@ -24,16 +24,16 @@ public class CMDHandler implements CommandExecutor {
 		}
 		WandEnum wand = WandEnum.getByName(args[0]);
 		if (wand == null) {
-			player.sendMessage(ChatColor.RED+"Sorry, but there is no wand called "+args[0]+"!");
+			ChatUtil.sendTo(player,ChatColor.RED+"Sorry, but there is no wand called "+args[0]+"!");
 			return true;
 		}
 		
 		if (!player.hasPermission(wand.getPermission())) {
 			if (player.isOp()) {
-				player.sendMessage(ChatColor.RED+"You don't have permission to use the "+wand.getName()+ChatColor.RED+" wand!");
-				player.sendMessage(ChatColor.RED+"Missing permission: "+wand.getPermission());
+				ChatUtil.sendTo(player,ChatColor.RED+"You don't have permission to use the "+wand.getName()+ChatColor.RED+" wand!");
+				ChatUtil.sendTo(player,ChatColor.RED+"Missing permission: "+wand.getPermission());
 			}else {
-				player.sendMessage(ChatColor.RED+"You don't have permission to use the "+wand.getName()+ChatColor.RED+" wand!");
+				ChatUtil.sendTo(player,ChatColor.RED+"You don't have permission to use the "+wand.getName()+ChatColor.RED+" wand!");
 			}
 			return true;
 		}

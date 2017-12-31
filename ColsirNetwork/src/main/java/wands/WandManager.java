@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import colsirnetwork.ChatUtil;
 import colsirnetwork.ColsirNetwork;
 
 public class WandManager {
@@ -53,6 +54,7 @@ public class WandManager {
 	public void giveWand(Player player, WandEnum type) {
 		ItemStack wand = wands.get(type);
 		player.getInventory().addItem(wand);
+		ChatUtil.sendTo(player, "You have received a "+type.getName()+"&7!");
 	}
 
 }

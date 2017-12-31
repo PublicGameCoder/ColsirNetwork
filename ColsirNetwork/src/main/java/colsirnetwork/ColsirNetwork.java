@@ -2,7 +2,6 @@ package colsirnetwork;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import wands.HistoriaWand;
 import wands.WandManager;
 
 public class ColsirNetwork extends JavaPlugin {
